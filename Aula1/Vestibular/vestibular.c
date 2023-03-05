@@ -3,6 +3,34 @@
 #include <ctype.h>
 
 // procedimento que converte uma string para maiusculo
+void upper_case(char s1[], char s2[]);
+// compara dois arrays char passados nos parametros
+int compar(char s1[], char s2[], int tam);
+
+int main()
+{
+    // quantidade de caracteres a serem comparados
+    int qtd_questoes;
+    scanf("%d", &qtd_questoes);
+    // sequencia de caracteres corretos
+    char gabarito[qtd_questoes + 1];
+    gabarito[qtd_questoes] = '\0';
+    // sequencia de caracteres marcados pelo vestibulando
+    char gabarito_candidato[qtd_questoes + 1];
+    gabarito_candidato[qtd_questoes] = '\0';
+
+    scanf("%s", gabarito);
+    upper_case(gabarito, gabarito); // converte o caractere para maiusculo
+    scanf("%s", gabarito_candidato);
+    upper_case(gabarito_candidato, gabarito_candidato); // converte o caractere para maiusculo
+
+    // faz a comparacao das strings
+    int result = compar(gabarito, gabarito_candidato, qtd_questoes);
+
+    printf("%d\n", result);
+    return 0;
+}
+
 void upper_case(char s1[], char s2[])
 {
     int i = 0;
@@ -24,28 +52,5 @@ int compar(char s1[], char s2[], int tam)
             qtd++;
         i++;
     }
-    return qtd;
-}
-
-int main()
-{
-    // quantidade de caracteres a serem comparados
-    int qtd_questoes;
-    scanf("%d", &qtd_questoes);
-    // sequencia de caracteres corretos
-    char gabarito[qtd_questoes + 1];
-    gabarito[qtd_questoes] = '\0';
-    // sequencia de caracteres marcados pelo vestibulando
-    char gabarito_candidato[qtd_questoes + 1];
-    gabarito_candidato[qtd_questoes] = '\0';
-
-    scanf("%s", gabarito);
-    upper_case(gabarito, gabarito); // converte o caractere para maiusculo
-    scanf("%s", gabarito_candidato);
-    upper_case(gabarito_candidato, gabarito_candidato); // converte o caractere para maiusculo
-
-    int result = compar(gabarito, gabarito_candidato, qtd_questoes);
-
-    printf("%d\n", result);
-    return 0;
+    return qtd; // retorna a quantidade de caracteres iguais
 }
