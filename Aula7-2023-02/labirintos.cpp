@@ -4,30 +4,29 @@
 using namespace std;
 
 int main() {
-    int qtd_testes, n, v, a, aux1, aux2, movimentos;
+    int numTests, numVertices, numEdges, start, end, totalMovements;
 
-    cin >> qtd_testes;
+    cin >> numTests;
 
-    for (int i = 0; i < qtd_testes; i++) {
-        cin >> n >> v >> a;
-        movimentos = 0;
-        
-        vector<vector<bool>> labirinto(v, vector<bool>(v));
+    while (numTests--) {
+        cin >> numVertices >> numVertices >> numEdges;
+        totalMovements = 0;
 
-        for (int j = 0; j < a; j++) {
-            cin >> aux1 >> aux2;
-            
-            labirinto[aux1][aux2] = true;
-            labirinto[aux2][aux1] = true;
+        vector<vector<bool>> maze(numVertices, vector<bool>(numVertices, false));
+
+        for (int i = 0; i < numEdges; i++) {
+            cin >> start >> end;
+            maze[start][end] = true;
+            maze[end][start] = true;
         }
 
-        for (auto linha : labirinto) {
-            for (auto vertice : linha) {
-                movimentos += vertice;
+        for (const auto& row : maze) {
+            for (bool cell : row) {
+                totalMovements += cell;
             }
         }
 
-        cout << movimentos << endl;
+        cout << totalMovements << endl;
     }
     
     return 0;

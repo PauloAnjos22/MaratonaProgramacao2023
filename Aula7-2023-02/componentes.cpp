@@ -4,61 +4,65 @@
 
 using namespace std;
 
-int visitados[26];
-vector<int> aux;
+vector<int> adjList[26];
+bool visited[26];
+vector<char> component;
 
-void dfs(int vAtual, vector<int> grafo[]) {
-    visitados[vAtual] = 1;
-    aux.push_back(vAtual + 97);
+void depthFirstSearch(int node, vector<int> graph[]) {
+    visited[node] = true;
+    component.push_back(node + 'a');  // Adiciona o caractere correspondente ao vetor de componentes
 
-    for (int i = 0; i < grafo[vAtual].size(); i++) {
-        if (visitados[grafo[vAtual][i]] == 0)
-            dfs(grafo[vAtual][i], grafo);
+    for (auto neighbor : graph[node]) {
+        if (!visited[neighbor])
+            depthFirstSearch(neighbor, graph);
     }
 }
 
 int main() {
-    int qtd_testes, qtd_comp, v, a;
-    char aux2, aux1;
+    int numTests, numVertices, numEdges, vertex1, vertex2;
+    char startVertex, endVertex;
 
-    cin >> qtd_testes;
+    cin >> numTests;
 
-    for (int i = 0; i < qtd_testes; i++) {
-        qtd_comp = 0;
+    for (int testCase = 1; testCase <= numTests; ++testCase) {
+        cin >> numVertices >> numEdges;
 
-        cin >> v >> a;
-        
-        for (int j = 0; j < v; j++)
-            visitados[j] = 0;
+        // Inicializa os vetores e variáveis para cada caso de teste
+        fill(begin(visited), end(visited), false);
+        for (int i = 0; i < 26; ++i) {
+            adjList[i].clear();
+        }
+        component.clear();
 
-        vector<int> grafo[26];
-        aux.clear();
+        // Leitura das arestas
+        for (int edge = 0; edge < numEdges; ++edge) {
+            cin >> startVertex >> endVertex;
+            vertex1 = startVertex - 'a';
+            vertex2 = endVertex - 'a';
 
-        for (int j = 0; j < a; j++) {
-            cin >> aux1 >> aux2;
-            
-            grafo[(int) aux1 - 97].push_back((int) aux2 - 97);
-            grafo[(int) aux2 - 97].push_back((int) aux1 - 97);
+            adjList[vertex1].push_back(vertex2);
+            adjList[vertex2].push_back(vertex1);
         }
 
-        cout << "Case #" << i + 1 << ":" << endl;
-        
-        for (int j = 0; j < v; j++) {
-            if (visitados[j] == 0) {
-                dfs(j, grafo);
-                sort(aux.begin(), aux.end());
+        cout << "Case #" << testCase << ":" << endl;
 
-                for(int i = 0; i < aux.size(); i++)
-                    printf("%c,", aux[i]);
-                
+        int componentCount = 0;
+        for (int vertex = 0; vertex < numVertices; ++vertex) {
+            if (!visited[vertex]) {
+                depthFirstSearch(vertex, adjList);
+                sort(component.begin(), component.end());
+
+                for (const auto& ch : component)
+                    cout << ch << ',';
+
                 cout << endl;
-                qtd_comp += 1;
-                aux.clear();
+                componentCount++;
+                component.clear();
             }
         }
 
-        cout << qtd_comp << " connected components\n\n";
+        cout << componentCount << " connected components\n\n";
     }
-    
+
     return 0;
 }

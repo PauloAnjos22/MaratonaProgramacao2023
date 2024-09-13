@@ -1,74 +1,64 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<list<int>> grafo(25);
-int visitados[25], v = 1;
-int V, A, contador = 0;
+vector<list<int>> adjacencyList(25);
+vector<int> visited(25, 0);
+int currentLabel = 1;
+int numVertices, numEdges, pathCounter = 0;
 
-void dfs(int vAtual, int branco) {
-    visitados[vAtual] = v;
-    contador += 1;
-  
-    list<int>::iterator it;
-    for (it = grafo[vAtual].begin(); it != grafo[vAtual].end(); it++) {
-        if (visitados[*it] != v) {
-            visitados[*it] = v;
+void depthFirstSearch(int currentNode, int indentation) {
+    visited[currentNode] = currentLabel;
+    pathCounter++;
 
-            for (int i = 0; i < branco; i++)
-              printf(" ");
-          
-            printf("%d-%d pathR(G,%d)\n", vAtual, *it, *it);
-          
-            dfs(*it, branco + 2);
-        } 
-        else {
-            for (int i = 0; i < branco; i++)
-              printf(" ");
-          
-            printf("%d-%d\n", vAtual, *it);
+    for (const auto& neighbor : adjacencyList[currentNode]) {
+        if (visited[neighbor] != currentLabel) {
+            visited[neighbor] = currentLabel;
+            
+            cout << string(indentation, ' ') << currentNode << '-' << neighbor << " pathR(G," << neighbor << ")" << endl;
+            
+            depthFirstSearch(neighbor, indentation + 2);
+        } else {
+            cout << string(indentation, ' ') << currentNode << '-' << neighbor << endl;
         }
     }
 }
 
 int main() {
-    int qtd_testes, aux1, aux2;
+    int testCases, startNode, endNode;
 
-    cin >> qtd_testes;
+    cin >> testCases;
 
-    for (int i = 0; i < qtd_testes; i++) {
-        if (i != 0)
-          printf("\n");
-      
-        cin >> V >> A;
-
-        contador = 0;
-
-        for (int j = 0; j < V; j++)
-          grafo[j].clear();
-
-        for (int j = 0; j < A; j++) {
-            cin >> aux1 >> aux2;
-
-            grafo[aux1].push_back(aux2);
+    while (testCases--) {
+        if (testCases != 0)
+            cout << endl;
+        
+        cin >> numVertices >> numEdges;
+        
+        pathCounter = 0;
+        
+        for (int i = 0; i < numVertices; i++)
+            adjacencyList[i].clear();
+        
+        for (int i = 0; i < numEdges; i++) {
+            cin >> startNode >> endNode;
+            adjacencyList[startNode].push_back(endNode);
         }
-
-        for (int j = 0; j < V; j++)
-          grafo[j].sort();
-
-        printf("Caso %d:\n", i + 1);
-
-        for (int j = 0; j < V; j++) {
-            if (visitados[j] == v)
-                continue;
-            else {
-                dfs(j, 2);
-              
-                if (grafo[j].size() && contador != V)
-                    printf("\n");
+        
+        for (int i = 0; i < numVertices; i++)
+            adjacencyList[i].sort();
+        
+        cout << "Caso " << (testCases + 1) << ":" << endl;
+        
+        for (int i = 0; i < numVertices; i++) {
+            if (visited[i] != currentLabel) {
+                depthFirstSearch(i, 2);
+                
+                if (!adjacencyList[i].empty() && pathCounter != numVertices)
+                    cout << endl;
             }
         }
-        v++;
-  
+        
+        currentLabel++;
     }
 
     return 0;
